@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script src="http://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+
+    <body>
+        <div>            
+            <label for="">receita</label>
+            <input type="checkbox" name="receita" id="receita" value="1" onchange="naturezaData(this)"> 
+            <br>
+            <label for="">despesa</label>
+            <input type="checkbox" name="despesa" id="despesa" value="0" onchange="naturezaData(this)"> 
+           <br>
+        <label for="">Mês</label>
+        <select name=" mes" id="mes" >
+            <option value="Todos">Todos</option>
+            <option value="Janeiro">Janeiro</option>
+            <option value="Fevereiro">Fevereiro</option>
+            <option value="Março">Março</option>
+            <option value="Abril">Abril</option>
+            <option value="Maio">Maio</option>
+            <option value="Junho">Junho</option>
+            <option value="Julho">Julho</option>
+            <option value="Agosto">Agosto</option>
+            <option value="Setembro">Setembro</option>
+            <option value="Outubro">Outubro</option>
+            <option value="Novembro">Novembro</option>
+            <option value="Dezembro">Dezembro</option>
+            </select>
+        </div>
+        <div class="graficos">
+            <div style="display: flex;">
+                <div style="width: 500px;">
+                    <canvas id="tabela"></canvas>
+                </div>
+                <div style="width: 500px;">
+                    <canvas id="receita"></canvas>
+                </div>
+                <div style="width: 500px;">
+                    <canvas id="linha"></canvas>
+                </div>
+            </div>
+            <table id="tableData">
+                <tr>
+                    <th>descricao</th>
+                    <th>valor</th>
+                    <th>natureza</th>
+                    <th>mes</th>
+                </tr>
+            </table>
+        </div>
+        
+        <script src="script.js" wid></script>
+    </body>
+
+</html>

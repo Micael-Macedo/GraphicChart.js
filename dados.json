@@ -1,0 +1,56 @@
+[
+    {
+        "valor": 2000.00,
+        "natureza": 1,
+        "descricao": "Trabalho",
+        "mes": "Janeiro"
+    },
+    {
+        "valor": 10000.00,
+        "natureza": 1,
+        "descricao": "Freelancer",
+        "mes": "Fevereiro"
+    },
+    {
+        "valor": 6000.00,
+        "natureza": 1,
+        "descricao": "Senai",
+        "mes": "Abril"
+    },
+    {
+        "valor": 2000.00,
+        "natureza": 1,
+        "descricao": "Trabalho",
+        "mes": "Dezembro"
+    },
+    {
+        "valor": 200.00,
+        "natureza": 0,
+        "descricao": "Transporte",
+        "mes": "Janeiro"
+    },
+    {
+        "valor": 200.00,
+        "natureza": 0,
+        "descricao": "Cartao",
+        "mes": "Fevereiro"
+    },
+    {
+        "valor": 100.00,
+        "natureza": 0,
+        "descricao": "Presente",
+        "mes": "Abril"
+    },
+    {
+        "valor": 300.00,
+        "natureza": 0,
+        "descricao": "Imposto",
+        "mes": "Dezembro"
+    },
+    {
+        "valor": 500.00,
+        "natureza": 0,
+        "descricao": "Imposto",
+        "mes": "Dezembro"
+    }
+]
