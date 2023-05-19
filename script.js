@@ -115,57 +115,10 @@ gerarGraficos()
 
 function dataTabelaMes(listData, tabela) {
     listData.forEach(data => {
-        switch (data.mes) {
-            case 'Janeiro':
-                tabela[0].valor += data.valor
-                tabela[0].qtdMes += 1
-                break;
-            case 'Fevereiro':
-                tabela[1].valor += data.valor
-                tabela[1].qtdMes += 1
-                break;
-            case 'Março':
-                tabela[2].valor += data.valor
-                tabela[2].qtdMes += 1
-                break;
-            case 'Abril':
-                tabela[3].valor += data.valor
-                tabela[3].qtdMes += 1
-                break;
-            case 'Maio':
-                tabela[4].valor += data.valor
-                tabela[4].qtdMes += 1
-                break;
-            case 'Junho':
-                tabela[5].valor += data.valor
-                tabela[5].qtdMes += 1
-                break;
-            case 'Julho':
-                tabela[6].valor += data.valor
-                tabela[6].qtdMes += 1
-                break;
-            case 'Agosto':
-                tabela[7].valor += data.valor
-                tabela[7].qtdMes += 1
-                break;
-            case 'Setembro':
-                tabela[8].valor += data.valor
-                tabela[8].qtdMes += 1
-                break;
-            case 'Outubro':
-                tabela[9].valor += data.valor
-                tabela[9].qtdMes += 1
-                break;
-            case 'Novembro':
-                tabela[10].valor += data.valor
-                tabela[10].qtdMes += 1
-                break;
-            case 'Dezembro':
-                tabela[11].valor += data.valor
-                tabela[11].qtdMes += 1
-                break;
-        }
-    });
+        const posicao = meses.indexOf(data.mes);
+        tabela[posicao].valor += data.valor;
+        tabela[posicao].qtdMes += 1;
+      });
 }
 
 async function mesData(mes) {
