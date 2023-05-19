@@ -1,5 +1,3 @@
-const ctx = document.getElementById('tabela');
-const ctx1 = document.getElementById('linha');
 const dados = fetch("http://127.0.0.1:5500/dados.json")
     .then(r => { return r.json() })
 
@@ -8,11 +6,11 @@ const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julh
 
 meses.forEach(mes => {
     StructureDados.push({
-      mes: mes,
-      valor: 0,
-      qtdMes: 0
+        mes: mes,
+        valor: 0,
+        qtdMes: 0
     });
-  });
+});
 
 const StructureGrafico = {
     grafico: "grafico",
@@ -29,7 +27,7 @@ const gerarGraficos = async () => {
     const receitas = []
     const despesas = []
 
-    allDados.forEach(function (dado) {
+    allDados.forEach(dado => {
         if (dado.natureza === 0) {
             dado.natureza = "despesa"
             despesas.push(dado)
@@ -39,10 +37,15 @@ const gerarGraficos = async () => {
         }
     });
 
+    //Preenche dados para posição
     dataTabelaMes(despesas, DespesaMeses)
     dataTabelaMes(receitas, ReceitaMeses)
 
-    graficoValores = new Chart(ctx, {
+    const ctx = document.getElementById('tabela');
+    const ctx1 = document.getElementById('linha');
+    const ctx2 = document.getElementById('linhaValor');
+
+    const graficoValores = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: meses,
@@ -67,10 +70,11 @@ const gerarGraficos = async () => {
                 y: {
                     beginAtZero: true
                 }
-            }
+            },
         }
     });
-    graficoQuantidade = new Chart(ctx1, {
+
+    const graficoQuantidade = new Chart(ctx1, {
         type: 'doughnut',
         data: {
             labels: meses,
@@ -95,89 +99,62 @@ const gerarGraficos = async () => {
                 y: {
                     beginAtZero: true
                 }
-            }
+            },
         }
     });
+    const graficoValorLinha = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: [
+                {
+                    label: 'Lucro',
+                    data: ReceitaMeses.map(a => a.valor),
+                    borderWidth: 1
+                },
+                {
+                    label: 'Despesa',
+                    data: DespesaMeses.map(a => a.valor),
+                    borderWidth: 1
+                }
+            ],
+        },
+        options: {
+            parsing: {
+                xAxisKey: 'id',
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+        }
+    });
+
     let conteudoGraficoQuantidade = JSON.parse(JSON.stringify(StructureGrafico))
     let conteudoGraficoValores = JSON.parse(JSON.stringify(StructureGrafico))
+    let conteudoGraficoValoresLinha = JSON.parse(JSON.stringify(StructureGrafico))
 
     conteudoGraficoQuantidade.grafico = graficoQuantidade
     conteudoGraficoQuantidade.dados = [ReceitaMeses.map(a => a.qtdMes), DespesaMeses.map(a => a.qtdMes)]
 
     conteudoGraficoValores.dados = [ReceitaMeses.map(a => a.valor), DespesaMeses.map(a => a.valor)]
     conteudoGraficoValores.grafico = graficoValores
+    
+    conteudoGraficoValoresLinha.dados = [ReceitaMeses.map(a => a.valor), DespesaMeses.map(a => a.valor)]
+    conteudoGraficoValoresLinha.grafico = graficoValorLinha
 
-    graficos.push(conteudoGraficoQuantidade, conteudoGraficoValores)
+    graficos.push(conteudoGraficoQuantidade, conteudoGraficoValores, conteudoGraficoValoresLinha)
 
 };
 gerarGraficos()
-
 
 function dataTabelaMes(listData, tabela) {
     listData.forEach(data => {
         const posicao = meses.indexOf(data.mes);
         tabela[posicao].valor += data.valor;
         tabela[posicao].qtdMes += 1;
-      });
-}
-
-async function mesData(mes) {
-    console.log(mes.value)
-    let allDados = await dados;
-
-
-    var table = document.getElementById('tableData');
-
-    var rowLength = table.rows.length;
-
-    for (var i = 1; i < rowLength; i += 1) {
-        table.deleteRow(i)
-        i = 0
-        rowLength = table.rows.length
-    }
-
-    if (mes.value != "Todos") {
-        let ReceitaMes = ReceitaMeses.filter(a => a.mes == mes.value)
-        let DespesaMes = DespesaMeses.filter(a => a.mes == mes.value)
-
-
-        console.log(dados)
-        console.log("Dados", allDados);
-
-
-
-        let rowDados = allDados.filter(a => a.mes === mes.value)
-
-        rowDados.forEach(dado => {
-            $("#tableData").append(
-                `
-                <tr>
-                <td>${dado.descricao}</td>
-                <td>${dado.valor}</td>
-                <td>${dado.natureza}</td>
-                    <td>${dado.mes}</td>
-                </tr>
-                
-                `
-            )
-        });
-
-    } else {
-        allDados.forEach(dado => {
-            $("#tableData").append(
-                `
-                <tr>
-                <td>${dado.descricao}</td>
-                <td>${dado.valor}</td>
-                <td>${dado.natureza}</td>
-                    <td>${dado.mes}</td>
-                </tr>
-                
-                `
-            )
-        });
-    }
-
+    });
 }
 
 function changeGraphicsLabel(label) {
@@ -205,7 +182,7 @@ function changeGraphicsLabel(label) {
 
 }
 function changeGraphicsByDataset(natureza) {
-    console.log("Hi")
+    console.log(natureza);
     graficos.forEach(infoGrafico => {
         const isDataShown = infoGrafico.grafico.isDatasetVisible(natureza)
         if (natureza != "") {
@@ -231,6 +208,3 @@ inputNaturezas.forEach(inputNatureza => {
 inputMes.addEventListener("change", function () {
     changeGraphicsLabel(this.value);
 })
-
-
-
