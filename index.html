@@ -13,10 +13,10 @@
     <body>
         <div>            
             <label for="">receita</label>
-            <input type="checkbox" name="receita" id="receita" value="1" onchange="naturezaData(this)"> 
+            <input type="checkbox" name="receita" id="receita" value="1" class="natureza"> 
             <br>
             <label for="">despesa</label>
-            <input type="checkbox" name="despesa" id="despesa" value="0" onchange="naturezaData(this)"> 
+            <input type="checkbox" name="despesa" id="despesa" value="0" class="natureza"> 
            <br>
         <label for="">Mês</label>
         <select name=" mes" id="mes" >
@@ -36,14 +36,13 @@
             </select>
         </div>
         <div class="graficos">
-            <div style="display: flex;">
-                <div style="width: 500px;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="width: 750px;">
+                    <h2>Valor Lançamentos</h2>
                     <canvas id="tabela"></canvas>
                 </div>
                 <div style="width: 500px;">
-                    <canvas id="receita"></canvas>
-                </div>
-                <div style="width: 500px;">
+                    <h2>Quantidade Lançamentos</h2>
                     <canvas id="linha"></canvas>
                 </div>
             </div>

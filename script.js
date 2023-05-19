@@ -2,85 +2,39 @@ const ctx = document.getElementById('tabela');
 const ctx1 = document.getElementById('linha');
 const dados = fetch("http://127.0.0.1:5500/dados.json")
     .then(r => { return r.json() })
-let StructureDados = [
-    {
-        mes: "Janeiro",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Fevereiro",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Março",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Abril",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Maio",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Junho",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Julho",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Agosto",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Setembro",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Outubro",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Novembro",
-        valor: 0,
-        qtdMes: 0
-    },
-    {
-        mes: "Dezembro",
-        valor: 0,
-        qtdMes: 0
-    }
-]
 
-ReceitaMeses =  JSON.parse(JSON.stringify(StructureDados))
+const StructureDados = []
+const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+
+meses.forEach(mes => {
+    StructureDados.push({
+      mes: mes,
+      valor: 0,
+      qtdMes: 0
+    });
+  });
+
+const StructureGrafico = {
+    grafico: "grafico",
+    dados: "dados"
+}
+
+
+ReceitaMeses = JSON.parse(JSON.stringify(StructureDados))
 DespesaMeses = JSON.parse(JSON.stringify(StructureDados))
-graficos = []  
+graficos = []
 
 const gerarGraficos = async () => {
     const allDados = await dados;
-    const receitas =  []
-    const despesas =  []
+    const receitas = []
+    const despesas = []
 
     allDados.forEach(function (dado) {
         if (dado.natureza === 0) {
             dado.natureza = "despesa"
-            receitas.push(dado)
-
-        } else {
             despesas.push(dado)
+        } else {
+            receitas.push(dado)
             dado.natureza = "lucro"
         }
     });
@@ -88,10 +42,10 @@ const gerarGraficos = async () => {
     dataTabelaMes(despesas, DespesaMeses)
     dataTabelaMes(receitas, ReceitaMeses)
 
-    graficoBarra = new Chart(ctx, {
+    graficoValores = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ReceitaMeses.map(a => a.mes),
+            labels: meses,
             datasets: [
                 {
                     label: 'Lucro',
@@ -116,25 +70,26 @@ const gerarGraficos = async () => {
             }
         }
     });
-
-    graficoLinha = new Chart(ctx1, {
-        type: 'polarArea',
+    graficoQuantidade = new Chart(ctx1, {
+        type: 'doughnut',
         data: {
-            labels: DespesaMeses.map(a => a.mes),
+            labels: meses,
             datasets: [
                 {
-                    label: 'quantidade de atividades lucrativas',
-                    data: ReceitaMeses.map(a => a.valor),
+                    label: 'Lucro',
+                    data: ReceitaMeses.map(a => a.qtdMes),
+                    borderWidth: 1
                 },
                 {
-                    label: 'quantidade de atividades de despesas',
-                    data: DespesaMeses.map(a => a.valor),
+                    label: 'Despesa',
+                    data: DespesaMeses.map(a => a.qtdMes),
+                    borderWidth: 1
                 }
-            ]
+            ],
         },
         options: {
             parsing: {
-                xAxisKey: 'id'
+                xAxisKey: 'id',
             },
             scales: {
                 y: {
@@ -142,10 +97,21 @@ const gerarGraficos = async () => {
                 }
             }
         }
-    })
-    graficos.push(graficoLinha, graficoBarra)
+    });
+    let conteudoGraficoQuantidade = JSON.parse(JSON.stringify(StructureGrafico))
+    let conteudoGraficoValores = JSON.parse(JSON.stringify(StructureGrafico))
+
+    conteudoGraficoQuantidade.grafico = graficoQuantidade
+    conteudoGraficoQuantidade.dados = [ReceitaMeses.map(a => a.qtdMes), DespesaMeses.map(a => a.qtdMes)]
+
+    conteudoGraficoValores.dados = [ReceitaMeses.map(a => a.valor), DespesaMeses.map(a => a.valor)]
+    conteudoGraficoValores.grafico = graficoValores
+
+    graficos.push(conteudoGraficoQuantidade, conteudoGraficoValores)
 
 };
+gerarGraficos()
+
 
 function dataTabelaMes(listData, tabela) {
     listData.forEach(data => {
@@ -202,19 +168,6 @@ function dataTabelaMes(listData, tabela) {
     });
 }
 
-function naturezaData(natureza) {
-    const isDataShown = graficoBarra.isDatasetVisible(natureza.value)
-    if (natureza.value != "") {
-        if (isDataShown === false) {
-            graficoBarra.show(natureza.value);
-        }
-        if (isDataShown === true) {
-            graficoBarra.hide(natureza.value);
-        }
-    } else {
-
-    }
-}
 async function mesData(mes) {
     console.log(mes.value)
     let allDados = await dados;
@@ -255,23 +208,8 @@ async function mesData(mes) {
                 `
             )
         });
-        graficoBarra.config.data.labels = [mes.value];
-        graficoBarra.config.data.datasets[0].data = [ReceitaMes[0].Receita];
-        graficoBarra.config.data.datasets[1].data = [DespesaMes[0].Despesa];
-
-        graficoLinha.config.data.labels = [mes.value];
-        graficoLinha.config.data.datasets[0].data = [ReceitaMes[0].qtdReceita];
-        graficoLinha.config.data.datasets[1].data = [DespesaMes[0].qtdDespesa];
 
     } else {
-        graficoBarra.config.data.labels = ReceitaMeses.map(a => a.mes);
-        graficoBarra.config.data.datasets[0].data = ReceitaMeses.map(a => a.Receita);
-        graficoBarra.config.data.datasets[1].data = DespesaMeses.map(a => a.Despesa);
-
-        graficoLinha.config.data.labels = [ReceitaMeses.map(a => a.mes)];
-        graficoLinha.config.data.datasets[0].data = ReceitaMeses.map(a => a.qtdReceita);
-        graficoLinha.config.data.datasets[1].data = DespesaMeses.map(a => a.qtdDespesa);
-
         allDados.forEach(dado => {
             $("#tableData").append(
                 `
@@ -287,28 +225,59 @@ async function mesData(mes) {
         });
     }
 
-    graficoLinha.update();
-    graficoBarra.update();
 }
 
-function changeGraphics(label, data) {
-    graficos.forEach(grafico => {
-        grafico.config.data.labels = [label]
-        grafico.config.data.datasets.forEach(dataset => {
-            dataset.data = [data[0].valor]
+function changeGraphicsLabel(label) {
+    if (label !== "Todos") {
+        graficos.forEach(infoGrafico => {
+            infoGrafico.grafico.config.data.labels = meses;
+            let mes = infoGrafico.grafico.config.data.labels.indexOf(label)
+            infoGrafico.grafico.config.data.labels = [label];
+
+            infoGrafico.grafico.config.data.datasets.forEach((dataset, index) => {
+                let dados = infoGrafico.dados[index]
+                dataset.data = [dados[mes]]
+            });
+            infoGrafico.grafico.update()
         });
-        grafico.update();
+    } else {
+        graficos.forEach(infoGrafico => {
+            infoGrafico.grafico.config.data.labels = meses;
+            infoGrafico.grafico.config.data.datasets.forEach((dataset, index) => {
+                dataset.data = infoGrafico.dados[index]
+            });
+            infoGrafico.grafico.update()
+        })
+    }
+
+}
+function changeGraphicsByDataset(natureza) {
+    console.log("Hi")
+    graficos.forEach(infoGrafico => {
+        const isDataShown = infoGrafico.grafico.isDatasetVisible(natureza)
+        if (natureza != "") {
+            if (isDataShown === false) {
+                infoGrafico.grafico.show(natureza);
+            }
+            if (isDataShown === true) {
+                infoGrafico.grafico.hide(natureza);
+            }
+        }
+        infoGrafico.grafico.update()
     });
 }
 const inputMes = document.getElementById("mes");
-const inputReceita = document.getElementById("receita");
-const inputDespesa = document.getElementById("despesa");
+const inputNaturezas = document.querySelectorAll(".natureza");
 
-inputReceita.addEventListener("change", changeGraphics())
-inputMes.addEventListener("change", function (){
-    console.log(this.value);
+inputNaturezas.forEach(inputNatureza => {
+    inputNatureza.addEventListener("change", function () {
+        changeGraphicsByDataset(this.value);
+    })
+});
+
+inputMes.addEventListener("change", function () {
+    changeGraphicsLabel(this.value);
 })
 
-gerarGraficos()
 
 
